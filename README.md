@@ -30,6 +30,24 @@ uv run pytest -q
 uv run python -m app.ask "LoRAとは何ですか？"
 ```
 
+会話履歴を保って続けて質問するには、対話モードを使います。`exit`、`quit`、または `終了` で終了します。
+
+```bash
+uv run python -m app.ask --interactive
+```
+
+応答時間と入出力トークン数を記録しながら、複数のモデル・質問を比較するには、`--model` と `--question` をそれぞれ比較したい分だけ指定します。応答時間はAPIへの生成リクエストにかかった秒数です。
+
+```bash
+uv run python -m app.ask \
+  --model gemini-3.5-flash-lite \
+  --model gemini-3.5-flash \
+  --question "LoRAとは何ですか？" \
+  --question "RAGとは何ですか？"
+```
+
+各質問を各モデルで実行し、モデル名・質問・応答時間・トークン数・回答を表示します。モデル名を省略すると `AIE_MODEL` または既定モデルを使い、質問名を省略すると講座に固有の既定質問を使います。
+
 詳しい手順は [lectures/01/problem.md](lectures/01/problem.md) を見てください。
 
 ## 構成
