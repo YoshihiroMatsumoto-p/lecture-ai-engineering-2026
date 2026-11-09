@@ -1,0 +1,201 @@
+{
+  "summary": {
+    "label": "after",
+    "n": 21,
+    "format_rate": 1.0,
+    "content_rate": 0.9523809523809523,
+    "both_rate": 0.9523809523809523,
+    "seconds": 38.2
+  },
+  "rows": [
+    {
+      "question": "成果物の保存先のルールは？",
+      "raw": "{\"answer\": \"成果物は作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ユーザーが成果物の保存先を指定したら、どこを優先しますか",
+      "raw": "{\"answer\": \"成果物は作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "出来上がった資料の保存場所はどう決めますか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "保存先に迷ったら誰に聞きますか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "保存するフォルダがはっきりしない場合、何をすればよいですか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "適切な保存先を判断できない場合はどう対応しますか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "一時ファイルを作成できる場所はどこですか",
+      "raw": "{\"answer\": \"一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "変換途中の一時ファイルはどの場所に作成できますか",
+      "raw": "{\"answer\": \"一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "一時ファイルを置ける領域と、作成ごとの確認の要否を教えてください",
+      "raw": "{\"answer\": \"一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "後片付けで消す一時ファイルの範囲は？",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "処理に使った一時ファイルを消す前に何を確認し、どれを消しますか",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "作業後に削除する一時ファイルの対象とタイミングを教えてください",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "送信の依頼がない場合、メールはどの状態にしますか",
+      "raw": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "メールを書いてほしいと言われただけなら、どう仕上げますか",
+      "raw": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "送信を明示されていないメールは下書きにしますか",
+      "raw": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "完成した成果物の保管期間は何年ですか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "メールの下書きは何日後に削除しますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "成果物を暗号化せず保存してよい例外はありますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "一時ファイルを置くディスクの空き容量は最低何GB必要ですか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "メールの下書きの件名にはどの接頭辞を付けますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "成果物のバックアップを外付けSSDに保存してもよいですか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    }
+  ]
+}

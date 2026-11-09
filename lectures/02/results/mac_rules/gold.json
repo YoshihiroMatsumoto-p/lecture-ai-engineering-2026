@@ -1,0 +1,140 @@
+{
+  "成果物の保存先のルールは？": {
+    "needs_review": false,
+    "must_include": [
+      "作業対象",
+      "指定"
+    ]
+  },
+  "ユーザーが成果物の保存先を指定したら、どこを優先しますか": {
+    "needs_review": false,
+    "must_include": [
+      "作業対象",
+      "指定"
+    ]
+  },
+  "出来上がった資料の保存場所はどう決めますか": {
+    "needs_review": false,
+    "must_include": [
+      "作業対象",
+      "指定"
+    ]
+  },
+  "保存先に迷ったら誰に聞きますか": {
+    "needs_review": false,
+    "must_include": [
+      "ユーザー",
+      "確認"
+    ]
+  },
+  "保存するフォルダがはっきりしない場合、何をすればよいですか": {
+    "needs_review": false,
+    "must_include": [
+      "ユーザー",
+      "確認"
+    ]
+  },
+  "適切な保存先を判断できない場合はどう対応しますか": {
+    "needs_review": false,
+    "must_include": [
+      "ユーザー",
+      "確認"
+    ]
+  },
+  "一時ファイルを作成できる場所はどこですか": {
+    "needs_review": false,
+    "must_include": [
+      "一時領域"
+    ]
+  },
+  "変換途中の一時ファイルはどの場所に作成できますか": {
+    "needs_review": false,
+    "must_include": [
+      "一時領域"
+    ]
+  },
+  "一時ファイルを置ける領域と、作成ごとの確認の要否を教えてください": {
+    "needs_review": false,
+    "must_include": [
+      "一時領域"
+    ]
+  },
+  "後片付けで消す一時ファイルの範囲は？": {
+    "needs_review": false,
+    "must_include": [
+      "確認",
+      "今回作成",
+      "不要"
+    ]
+  },
+  "処理に使った一時ファイルを消す前に何を確認し、どれを消しますか": {
+    "needs_review": false,
+    "must_include": [
+      "確認",
+      "今回作成",
+      "不要"
+    ]
+  },
+  "作業後に削除する一時ファイルの対象とタイミングを教えてください": {
+    "needs_review": false,
+    "must_include": [
+      "確認",
+      "今回作成",
+      "不要"
+    ]
+  },
+  "送信の依頼がない場合、メールはどの状態にしますか": {
+    "needs_review": false,
+    "must_include": [
+      "下書き"
+    ]
+  },
+  "メールを書いてほしいと言われただけなら、どう仕上げますか": {
+    "needs_review": false,
+    "must_include": [
+      "下書き"
+    ]
+  },
+  "送信を明示されていないメールは下書きにしますか": {
+    "needs_review": false,
+    "must_include": [
+      "下書き"
+    ]
+  },
+  "完成した成果物の保管期間は何年ですか": {
+    "needs_review": true,
+    "must_include": [
+      "確認"
+    ]
+  },
+  "メールの下書きは何日後に削除しますか": {
+    "needs_review": true,
+    "must_include": [
+      "確認"
+    ]
+  },
+  "成果物を暗号化せず保存してよい例外はありますか": {
+    "needs_review": true,
+    "must_include": [
+      "確認"
+    ]
+  },
+  "一時ファイルを置くディスクの空き容量は最低何GB必要ですか": {
+    "needs_review": true,
+    "must_include": [
+      "確認"
+    ]
+  },
+  "メールの下書きの件名にはどの接頭辞を付けますか": {
+    "needs_review": true,
+    "must_include": [
+      "確認"
+    ]
+  },
+  "成果物のバックアップを外付けSSDに保存してもよいですか": {
+    "needs_review": true,
+    "must_include": [
+      "確認"
+    ]
+  }
+}

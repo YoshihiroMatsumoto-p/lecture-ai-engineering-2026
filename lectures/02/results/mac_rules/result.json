@@ -1,0 +1,526 @@
+{
+  "config": {
+    "base_model": "Qwen/Qwen3.5-0.8B",
+    "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "seed": 42,
+    "num_train_epochs": 20,
+    "warmup_steps": 6,
+    "lr": 0.0002,
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "max_seq_len": 512,
+    "max_new_tokens": 96,
+    "gen": {
+      "do_sample": false
+    }
+  },
+  "versions": {
+    "transformers": "5.18.0",
+    "peft": "0.21.1",
+    "trl": "1.14.2",
+    "torch": "2.14.1+cu130"
+  },
+  "method": "LoRA（量子化なし）",
+  "topic": "Mac作業・ファイル管理ルール",
+  "execution_support": "AI支援で作成し、本人のColab環境で実行",
+  "dataset_sizes": {
+    "train": 14,
+    "valid": 7,
+    "test": 21
+  },
+  "training_seconds": 243.65,
+  "training_steps": 40,
+  "training_log": [
+    {
+      "loss": 2.147618293762207,
+      "grad_norm": 2.8955702781677246,
+      "learning_rate": 0.00019618256431728194,
+      "entropy": 2.2834400475025176,
+      "num_tokens": 16960.0,
+      "mean_token_accuracy": 0.6110301107168198,
+      "epoch": 5.0,
+      "step": 10
+    },
+    {
+      "loss": 0.16655893325805665,
+      "grad_norm": 0.409880667924881,
+      "learning_rate": 0.00013612416661871533,
+      "entropy": 0.32656510844826697,
+      "num_tokens": 33920.0,
+      "mean_token_accuracy": 0.9701195955276489,
+      "epoch": 10.0,
+      "step": 20
+    },
+    {
+      "loss": 0.030581393837928773,
+      "grad_norm": 0.2595089077949524,
+      "learning_rate": 4.735678371226441e-05,
+      "entropy": 0.06856826096773147,
+      "num_tokens": 50880.0,
+      "mean_token_accuracy": 0.9918620139360428,
+      "epoch": 15.0,
+      "step": 30
+    },
+    {
+      "loss": 0.017625021934509277,
+      "grad_norm": 0.24199333786964417,
+      "learning_rate": 4.2658237049655323e-07,
+      "entropy": 0.046842209063470364,
+      "num_tokens": 67840.0,
+      "mean_token_accuracy": 0.9946107059717179,
+      "epoch": 20.0,
+      "step": 40
+    },
+    {
+      "train_runtime": 243.2288,
+      "train_samples_per_second": 1.151,
+      "train_steps_per_second": 0.164,
+      "total_flos": 209451526669056.0,
+      "train_loss": 0.5905959106981754,
+      "epoch": 20.0,
+      "step": 40
+    }
+  ],
+  "max_training_tokens": 250,
+  "faq": {
+    "save": "成果物は作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。",
+    "unclear": "保存先が不明な場合は、ユーザーに確認します。",
+    "temporary": "一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。",
+    "cleanup": "処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。",
+    "email": "送信の明示的な指定がないメールは、下書きの作成・保存までとします。"
+  },
+  "before_rows": [
+    {
+      "question": "成果物の保存先のルールは？",
+      "raw": "{\"answer\": \"作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ユーザーが成果物の保存先を指定したら、どこを優先しますか",
+      "raw": "{\"answer\": \"ユーザーの指定\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "出来上がった資料の保存場所はどう決めますか",
+      "raw": "{\"answer\": \"作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "保存先に迷ったら誰に聞きますか",
+      "raw": "{\"answer\": \"ユーザーに確認します\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "保存するフォルダがはっきりしない場合、何をすればよいですか",
+      "raw": "{\"answer\": \"ユーザーに確認してください\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "適切な保存先を判断できない場合はどう対応しますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "一時ファイルを作成できる場所はどこですか",
+      "raw": "{\"answer\": \"/tmp\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "変換途中の一時ファイルはどの場所に作成できますか",
+      "raw": "{\"answer\": \"/tmp\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "一時ファイルを置ける領域と、作成ごとの確認の要否を教えてください",
+      "raw": "{\"answer\": \"/tmp\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "後片付けで消す一時ファイルの範囲は？",
+      "raw": "{\"answer\": \"/tmp\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "処理に使った一時ファイルを消す前に何を確認し、どれを消しますか",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "作業後に削除する一時ファイルの対象とタイミングを教えてください",
+      "raw": "{\"answer\": \"作業後に削除する一時ファイルは、作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。ただし、保存先が不明な場合は、ユーザーに確認する必要があります。一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。送信の明示的な指定がないメールは、",
+      "format_ok": false,
+      "format_reason": "json_error: JSONDecodeError",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "送信の依頼がない場合、メールはどの状態にしますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "メールを書いてほしいと言われただけなら、どう仕上げますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "送信を明示されていないメールは下書きにしますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "完成した成果物の保管期間は何年ですか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "メールの下書きは何日後に削除しますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "成果物を暗号化せず保存してよい例外はありますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "一時ファイルを置くディスクの空き容量は最低何GB必要ですか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "メールの下書きの件名にはどの接頭辞を付けますか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    },
+    {
+      "question": "成果物のバックアップを外付けSSDに保存してもよいですか",
+      "raw": "{\"answer\": \"確認が必要\"}",
+      "format_ok": false,
+      "format_reason": "missing_key",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": true
+    }
+  ],
+  "after_rows": [
+    {
+      "question": "成果物の保存先のルールは？",
+      "raw": "{\"answer\": \"成果物は作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "ユーザーが成果物の保存先を指定したら、どこを優先しますか",
+      "raw": "{\"answer\": \"成果物は作業対象のフォルダかその付近に保存し、ユーザーの指定があれば優先します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "出来上がった資料の保存場所はどう決めますか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "保存先に迷ったら誰に聞きますか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "保存するフォルダがはっきりしない場合、何をすればよいですか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "適切な保存先を判断できない場合はどう対応しますか",
+      "raw": "{\"answer\": \"保存先が不明な場合は、ユーザーに確認します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "一時ファイルを作成できる場所はどこですか",
+      "raw": "{\"answer\": \"一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "変換途中の一時ファイルはどの場所に作成できますか",
+      "raw": "{\"answer\": \"一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "一時ファイルを置ける領域と、作成ごとの確認の要否を教えてください",
+      "raw": "{\"answer\": \"一時ファイルは /tmp などの一時領域に作成でき、作成のたびに確認する必要はありません。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "後片付けで消す一時ファイルの範囲は？",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "処理に使った一時ファイルを消す前に何を確認し、どれを消しますか",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "作業後に削除する一時ファイルの対象とタイミングを教えてください",
+      "raw": "{\"answer\": \"処理の終了と必要ファイルの保存を確認後、今回作成した不要な一時ファイルだけを削除します。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "送信の依頼がない場合、メールはどの状態にしますか",
+      "raw": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "メールを書いてほしいと言われただけなら、どう仕上げますか",
+      "raw": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "送信を明示されていないメールは下書きにしますか",
+      "raw": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "完成した成果物の保管期間は何年ですか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "メールの下書きは何日後に削除しますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "成果物を暗号化せず保存してよい例外はありますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "一時ファイルを置くディスクの空き容量は最低何GB必要ですか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "メールの下書きの件名にはどの接頭辞を付けますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "成果物のバックアップを外付けSSDに保存してもよいですか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    }
+  ],
+  "before": {
+    "label": "before",
+    "n": 21,
+    "format_rate": 0.047619047619047616,
+    "content_rate": 0.0,
+    "both_rate": 0.0,
+    "seconds": 45.9
+  },
+  "after": {
+    "label": "after",
+    "n": 21,
+    "format_rate": 1.0,
+    "content_rate": 0.9523809523809523,
+    "both_rate": 0.9523809523809523,
+    "seconds": 38.2
+  },
+  "regressed": [],
+  "knowledge": [
+    {
+      "質問": "バックアップ先のストレージ容量は何GBですか",
+      "FAQ にある": false,
+      "学習前の分類": "format_error",
+      "学習前の出力": "{\"answer\": \"確認が必要\"}",
+      "学習後の分類": "needs_review",
+      "学習後の出力": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}"
+    },
+    {
+      "質問": "一時ファイルの自動削除は毎日何時に実行しますか",
+      "FAQ にある": false,
+      "学習前の分類": "format_error",
+      "学習前の出力": "{\"answer\": \"確認が必要\"}",
+      "学習後の分類": "needs_review",
+      "学習後の出力": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}"
+    },
+    {
+      "質問": "メールの承認担当者の氏名は何ですか",
+      "FAQ にある": false,
+      "学習前の分類": "format_error",
+      "学習前の出力": "{\"answer\": \"確認が必要\"}",
+      "学習後の分類": "needs_review",
+      "学習後の出力": "{\"answer\": \"この FAQ には記載がありません。ユーザーに確認が必要です。\", \"needs_review\": true}"
+    },
+    {
+      "質問": "送信の指示がないメールはどこまで作ればよいですか",
+      "FAQ にある": true,
+      "学習前の分類": "format_error",
+      "学習前の出力": "{\"answer\": \"確認が必要\"}",
+      "学習後の分類": "asserted",
+      "学習後の出力": "{\"answer\": \"送信の明示的な指定がないメールは、下書きの作成・保存までとします。\", \"needs_review\": false}"
+    }
+  ],
+  "executed_training_myself": true
+}
