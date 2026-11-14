@@ -21,12 +21,14 @@ from pydantic_ai.exceptions import ModelHTTPError
 from fastmcp import Client
 from pydantic_ai.mcp import MCPToolset, StdioTransport
 from pydantic_ai.messages import ToolCallPart, ToolReturnPart
-from pydantic_ai.models.google import GoogleModel
+# from pydantic_ai.models.google import GoogleModel  # 松本memo: OpenAIを使うため削除
 from pydantic_ai.models.test import TestModel
-from pydantic_ai.providers.google import GoogleProvider
+# from pydantic_ai.providers.google import GoogleProvider  # 松本memo: OpenAIを使うため削除
+from pydantic_ai.models.openai import OpenAIResponsesModel  # 松本memo: OpenAIを使うため追加
 
 from app import tools
-from app.config import MODEL, api_error_message, get_api_key
+# from app.config import MODEL, api_error_message, get_api_key  # 松本memo: OpenAIを使うため削除
+from app.config import MODEL, api_error_message  # 松本memo: OpenAIを使うため変更
 
 INSTRUCTIONS = """\
 あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
@@ -41,6 +43,7 @@ INSTRUCTIONS = """\
 agent = Agent(instructions=INSTRUCTIONS)
 agent.tool_plain(tools.search_glossary)
 agent.tool_plain(tools.get_lecture_summary)
+agent.tool_plain(tools.make_quiz)
 
 # TODO(第3回 演習): tools.py に make_quiz を作り、ここで登録しよう
 
@@ -76,8 +79,12 @@ def build_mcp_agent(config_path: Path = MCP_CONFIG) -> Agent:
     return Agent(instructions=INSTRUCTIONS, toolsets=load_mcp_servers(config_path))
 
 
+""" 松本memo: OpenAIを使うために変更
 def build_model() -> GoogleModel:
     return GoogleModel(MODEL, provider=GoogleProvider(api_key=get_api_key()))
+"""
+def build_model() -> OpenAIResponsesModel:
+    return OpenAIResponsesModel(MODEL)
 
 
 def print_tools(target: Agent) -> None:
