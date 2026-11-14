@@ -6,10 +6,14 @@
 
 import json
 import random
+from datetime import datetime
 from functools import cache
 from pathlib import Path
+from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+LEARNING_LOG_DIR = Path(__file__).resolve().parent.parent / "learning_log"
 MAX_RESULTS = 3
 
 
@@ -103,3 +107,31 @@ def make_quiz(lecture: int) -> str:
         },
         ensure_ascii=False,
     )
+
+
+def save_learning_log(lecture: int, content: str) -> str:
+    """指定した回で学んだ内容や気づきを、learning_log/ にJSONファイルとして保存する。
+
+    利用者が「第3回で学んだことを記録して」のように保存を依頼したときに使う。
+    lecture は講義の回（1以上）、content は保存する学習内容。内容や回が不明なら
+    利用者に確認する。実行前に保存内容を表示し、利用者の承認を受ける。
+    """
+    if lecture < 1:
+        return "保存できません。講義の回は1以上で指定してください。"
+    content = content.strip()
+    if not content:
+        return "保存できません。学習内容を入力してください。"
+
+    saved_at = datetime.now(ZoneInfo("Asia/Tokyo"))
+    record = {
+        "saved_at": saved_at.isoformat(),
+        "lecture": lecture,
+        "content": content,
+    }
+    LEARNING_LOG_DIR.mkdir(parents=True, exist_ok=True)
+    # ファイル名はプログラム側で生成し、既存の記録を上書きしない。
+    path = LEARNING_LOG_DIR / f"{saved_at:%Y-%m-%d_%H%M%S}_{uuid4().hex}.json"
+    with path.open("x", encoding="utf-8") as f:
+        json.dump(record, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    return f"学習記録を保存しました: {path}"

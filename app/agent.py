@@ -16,11 +16,12 @@ import inspect
 import json
 from pathlib import Path
 
-from pydantic_ai import Agent
+from pydantic_ai import Agent, DeferredToolRequests, DeferredToolResults
 from pydantic_ai.exceptions import ModelHTTPError
 from fastmcp import Client
 from pydantic_ai.mcp import MCPToolset, StdioTransport
 from pydantic_ai.messages import ToolCallPart, ToolReturnPart
+from pydantic_ai.models import Model
 # from pydantic_ai.models.google import GoogleModel  # 松本memo: OpenAIを使うため削除
 from pydantic_ai.models.test import TestModel
 # from pydantic_ai.providers.google import GoogleProvider  # 松本memo: OpenAIを使うため削除
@@ -37,13 +38,16 @@ INSTRUCTIONS = """\
 - 用語集に見つからないことは、推測で断定せず「用語集にはない」と伝える。
 - 回答の最後に、関係する回（第N回）を示す。
 - 宿題の答えそのものは書かず、考え方のヒントで導く。
+- 学習記録の保存を依頼されたら save_learning_log を使う。講義の回や保存内容が不明なら確認する。
+- 保存が拒否されたら保存を再試行しない。保存に成功したというツールの結果を受け取ってから保存完了を伝える。
 """
 
 # モデルは実行時に渡す（テストではAPIを呼ばない TestModel に差し替えるため）
-agent = Agent(instructions=INSTRUCTIONS)
+agent = Agent(instructions=INSTRUCTIONS, output_type=[str, DeferredToolRequests])
 agent.tool_plain(tools.search_glossary)
 agent.tool_plain(tools.get_lecture_summary)
 agent.tool_plain(tools.make_quiz)
+agent.tool_plain(tools.save_learning_log, requires_approval=True)
 
 # TODO(第3回 演習): tools.py に make_quiz を作り、ここで登録しよう
 
@@ -116,6 +120,34 @@ def print_trace(result) -> None:
     print(f"[usage] {result.usage}")
 
 
+def run_with_approval(target: Agent, question: str, model: Model):
+    """承認待ちになったら内容を確認し、承認・拒否の結果を渡して処理を再開する。"""
+    result = target.run_sync(question, model=model)
+    while isinstance(result.output, DeferredToolRequests):
+        decisions = DeferredToolResults()
+        for call in result.output.approvals:
+            print(f"\n承認が必要なツール: {call.tool_name}")
+            if call.tool_name == "save_learning_log":
+                print(f"保存先: {tools.LEARNING_LOG_DIR}/（新しいJSONファイル）")
+            print(json.dumps(call.args_as_dict(), ensure_ascii=False, indent=2))
+            try:
+                answer = input("この内容で実行しますか？ [y/N]: ").strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                print("\n承認入力が中断されたため、承認待ちのツールを実行せずに終了します。")
+                raise SystemExit(0)
+            approved = answer in {"y", "yes"}
+            decisions.approvals[call.tool_call_id] = approved
+            print("承認しました。" if approved else "拒否しました。このツールは実行しません。")
+
+        result = target.run_sync(
+            model=model,
+            message_history=result.all_messages(),
+            deferred_tool_results=decisions,
+            usage=result.usage,
+        )
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="学習支援エージェントに質問する")
     parser.add_argument("question", nargs="?")
@@ -135,7 +167,7 @@ def main() -> None:
     if args.mcp:
         print("[tools] MCP サーバー（app/mcp_servers.json）")
     try:
-        result = target.run_sync(args.question, model=build_model())
+        result = run_with_approval(target, args.question, model=build_model())
     except ModelHTTPError as e:
         print(api_error_message(e.status_code, str(e.body)[:200]))
         raise SystemExit(1)
