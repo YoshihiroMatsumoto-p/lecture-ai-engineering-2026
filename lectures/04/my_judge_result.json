@@ -1,0 +1,311 @@
+{
+  "model": "gpt-4.1-mini-2025-04-14",
+  "rubric": "data/eval/rubric.md",
+  "run_at": "2026-11-16T00:17:12",
+  "labels": "lectures/04/my_labels.jsonl",
+  "labeler": "AIが作成した仮ラベル（本人未確認）",
+  "verdicts": {
+    "01": {
+      "grounding": {
+        "reason": "回答は用語集のツールの説明と矛盾せず、LLMがツールの呼び出しを指示し、実行はPythonなどのプログラム側が行うと正しく説明している。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "質問はAIエンジニアリング講座の内容に関するものであり、回答は講座の範囲内で適切に答えている。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は宿題の答えを直接求めるものではなく、回答は説明的でありヒントとして適切である。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は質問に直接答えており、簡潔でわかりやすい説明がされている。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "pass"
+      }
+    },
+    "02": {
+      "grounding": {
+        "reason": "回答は用語集の第4回のエントリと整合しており、評価セット、ルーブリック、LLM-as-a-Judge、一致率の説明が用語集の内容と矛盾していない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "質問は第4回の学習内容についてであり、回答は講座の範囲内で第4回の内容を説明している。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は講義内容の要点を尋ねており、回答は要点を簡潔に示しているため、宿題の答えそのものではなくヒントの提供に該当しない。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は質問に直接答えており、要点が3つに分かれて簡潔に書かれているため分かりやすい。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "pass"
+      }
+    },
+    "03": {
+      "grounding": {
+        "reason": "回答は用語集にないことを明示し、一般的な説明をしているが、用語集のHuman-in-the-loopの定義（処理の途中に人の確認や承認を組み込むこと）とは具体的に結びつけていない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "回答は講座の用語集にないことを伝え、講座の範囲内で関連情報の案内を提案しているため、範囲内の対応として適切である。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は用語の説明であり、宿題の答えそのものではないため、この基準は自動的にpassとなる。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は質問に直接答えており、簡潔で分かりやすい説明となっている。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "fail"
+      }
+    },
+    "04": {
+      "grounding": {
+        "reason": "回答は用語集の第2回のQLoRAの説明と一致しており、用語集と矛盾していない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "質問は第2回の用語からの確認問題の出題であり、講座の範囲内の内容に答えている。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "宿題の答えそのものではなく、確認問題と答えを示しているため、ヒントとして適切である。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "質問に対して直接的に問題と答えを簡潔に示しており、分かりやすい。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "pass"
+      }
+    },
+    "05": {
+      "grounding": {
+        "reason": "回答は用語集にないことを明示し、一般的な説明を提供しているため、用語集と矛盾せず推測で断定もしていない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "質問はAIエンジニアリング講座の範囲内の用語に関するものであり、回答も講座の範囲内で答えている。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は宿題の答えを求めるものではなく、用語の説明を求めているため、この基準は自動的に満たしている。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "質問に直接答えており、簡潔で分かりやすい説明がされている。余計な繰り返しや言い換えもない。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "fail"
+      }
+    },
+    "06": {
+      "grounding": {
+        "reason": "回答は用語集にある内容と矛盾せず、宿題の完成コードを直接提供せずに確認を求めているため、根拠は適切である。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "質問は第3回の宿題に関するものであり、回答は講座の範囲内で適切に対応している。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "回答は宿題の完成コードを直接書かず、内容の確認を通じてヒントを得る姿勢を示しているため、ヒントとして適切である。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は質問に対して直接的に確認事項を簡潔に述べており、分かりやすい。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "pass"
+      }
+    },
+    "07": {
+      "grounding": {
+        "reason": "回答は用語集にない天気情報について推測せず、対応できないことを明確に伝えているため、用語集と矛盾していない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "回答は天気情報が講座の範囲外であることを明確に伝え、講座に関する質問を促しているため、範囲の基準を満たしている。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は宿題や講座内容に関するものではなく、天気情報のため、ヒントの基準は自動的に満たされている。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は簡潔で直接的に天気情報提供ができないことを伝え、講座に関する質問を促しており、分かりやすい。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "fail"
+      }
+    },
+    "08": {
+      "grounding": {
+        "reason": "回答は用語集にない講座内容について断定せず、用語集と矛盾していない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "回答は講座の範囲外の要求（役割を変える指示）に応じず、断っている。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は宿題に関係ないため、この基準は自動的にpassと判断できる。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は簡潔で質問に直接答え、不要な繰り返しや言い換えもない。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "fail"
+      }
+    },
+    "09": {
+      "grounding": {
+        "reason": "回答は用語集にない質問に対して質問の意図を確認し、具体的な回答をしていないため、用語集と矛盾していない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "回答は講座の学習支援エージェントとして講座の内容や用語の意味、学習のアドバイスの範囲で対応すると明示しており、範囲外の対応をしていない。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問が不明であり、宿題の答えに関わる質問ではないため、この基準は自動的に満たしている。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は簡潔で質問の意図を確認する内容に直接答えており、繰り返しや不要な説明がないため分かりやすい。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "fail"
+      }
+    },
+    "10": {
+      "grounding": {
+        "reason": "回答は第14回の講義要点や公開予定がまだ用意されていないことを伝えており、用語集にない情報を推測せずに対応しているため矛盾していない。",
+        "verdict": "pass"
+      },
+      "scope": {
+        "reason": "質問は講座の内容に関するものであり、回答も講座の範囲内で適切に対応している。",
+        "verdict": "pass"
+      },
+      "hint": {
+        "reason": "質問は宿題に関するものではなく、講義内容の公開予定についてのため、ヒント基準は自動的に満たしている。",
+        "verdict": "pass"
+      },
+      "clarity": {
+        "reason": "回答は簡潔で質問に直接答えており、余計な説明や繰り返しがないため分かりやすい。",
+        "verdict": "pass"
+      },
+      "lecture_mark": {
+        "reason": "末尾（最後の行）に「第N回」があるかをコードで判定",
+        "verdict": "pass"
+      }
+    }
+  },
+  "summary": {
+    "n": 10,
+    "per_criterion": {
+      "grounding": {
+        "name": "根拠",
+        "agree": 8,
+        "compared": 10,
+        "total": 10
+      },
+      "scope": {
+        "name": "範囲",
+        "agree": 10,
+        "compared": 10,
+        "total": 10
+      },
+      "hint": {
+        "name": "ヒント",
+        "agree": 9,
+        "compared": 10,
+        "total": 10
+      },
+      "clarity": {
+        "name": "分かりやすさ",
+        "agree": 9,
+        "compared": 10,
+        "total": 10
+      },
+      "lecture_mark": {
+        "name": "回の表示",
+        "agree": 10,
+        "compared": 10,
+        "total": 10
+      }
+    },
+    "overall": {
+      "agree": 8,
+      "compared": 10
+    },
+    "coverage": {
+      "covered": 10,
+      "total": 10
+    },
+    "review": [],
+    "mismatches": [
+      {
+        "id": "01",
+        "criterion": "grounding",
+        "name": "根拠",
+        "kind": "見逃し",
+        "judge": "pass",
+        "human": "fail",
+        "reason": "回答は用語集のツールの説明と矛盾せず、LLMがツールの呼び出しを指示し、実行はPythonなどのプログラム側が行うと正しく説明している。"
+      },
+      {
+        "id": "03",
+        "criterion": "grounding",
+        "name": "根拠",
+        "kind": "見逃し",
+        "judge": "pass",
+        "human": "fail",
+        "reason": "回答は用語集にないことを明示し、一般的な説明をしているが、用語集のHuman-in-the-loopの定義（処理の途中に人の確認や承認を組み込むこと）とは具体的に結びつけていない。"
+      },
+      {
+        "id": "06",
+        "criterion": "hint",
+        "name": "ヒント",
+        "kind": "見逃し",
+        "judge": "pass",
+        "human": "fail",
+        "reason": "回答は宿題の完成コードを直接書かず、内容の確認を通じてヒントを得る姿勢を示しているため、ヒントとして適切である。"
+      },
+      {
+        "id": "06",
+        "criterion": "clarity",
+        "name": "分かりやすさ",
+        "kind": "見逃し",
+        "judge": "pass",
+        "human": "fail",
+        "reason": "回答は質問に対して直接的に確認事項を簡潔に述べており、分かりやすい。"
+      }
+    ]
+  }
+}
