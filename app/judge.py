@@ -1,7 +1,7 @@
 """第4回: LLM-as-a-Judge で評価セットを採点し、人のラベルとの一致率を出す。
 
 使い方:
-    uv run python -m app.judge                  # 評価セットを LLM に採点させ、自分のラベルと比べる（要 GEMINI_API_KEY）
+    uv run python -m app.judge                  # 評価セットを採点する（Gemini: GEMINI_API_KEY / GPT: OPENAI_API_KEY）
     uv run python -m app.judge --model test     # API を呼ばず、簡単な規則で判定する偽モデルで動かす（動作確認用）
     uv run python -m app.judge --compare lectures/04/reference/labels_instructor.jsonl
                                                 # 2 つのラベルファイルの一致率を出す（API キー不要）
@@ -27,7 +27,9 @@ from pydantic_ai import Agent
 from pydantic_ai.exceptions import ModelHTTPError, UnexpectedModelBehavior
 from pydantic_ai.messages import ModelMessage, ModelResponse, ToolCallPart, UserPromptPart
 from pydantic_ai.models.function import AgentInfo, FunctionModel
+from pydantic_ai.models import Model
 from pydantic_ai.models.google import GoogleModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.google import GoogleProvider
 
 from app import tools
@@ -123,8 +125,11 @@ def build_judge(model, rubric: str) -> Agent:
     return Agent(model, output_type=JudgeResult, instructions=instructions, model_settings={"temperature": 0.0})
 
 
-def build_llm_model(model_name: str) -> GoogleModel:
-    """Gemini のモデルを作る。API キーが無ければ手順を表示して終了する（app.agent と同じ）。"""
+def build_llm_model(model_name: str) -> Model:
+    """GPT は OpenAI Responses API、それ以外は従来どおり Gemini に接続する。"""
+    if model_name.startswith(("gpt-", "openai:", "openai-responses:")):
+        name = model_name.removeprefix("openai:").removeprefix("openai-responses:")
+        return OpenAIResponsesModel(name)
     return GoogleModel(model_name, provider=GoogleProvider(api_key=get_api_key()))
 
 
@@ -301,15 +306,36 @@ def compare_labels(a: dict[str, dict], b: dict[str, dict], name_a: str, name_b: 
 
 
 # ---------------------------------------------------------------- 回答の生成（宿題・実装）
-def generate_answers(cases: list[dict], wait: float = 1.0) -> list[dict]:
-    """評価セットの各質問を自分のエージェント（app.agent）に投げ、回答を埋める。"""
+def generate_answers(cases: list[dict], wait: float = 1.0, model_name: str | None = None) -> list[dict]:
+    """自分のエージェントで回答を生成し、使用モデル・ツール呼び出しも記録する。"""
     from app.agent import agent, build_model
 
-    model = build_model()
+    model = build_llm_model(model_name) if model_name else build_model()
     print(f"回答を生成中 {len(cases)} 件 ", end="", flush=True)
     for case in cases:
         result = agent.run_sync(case["question"], model=model)
-        case["answer"] = str(result.output)
+        if not isinstance(result.output, str):
+            raise SystemExit(
+                f"\n#{case['id']} はツールの承認待ちです。自動承認や回答への変換は行いません。"
+                "承認を伴う質問は app.agent で個別に実行してください。"
+            )
+        case["answer"] = result.output
+        case["generation"] = {
+            "model": model.model_name,
+            "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "tool_calls": [
+                {"name": part.tool_name, "arguments": part.args_as_dict()}
+                for message in result.all_messages()
+                for part in message.parts
+                if isinstance(part, ToolCallPart)
+            ],
+            "usage": {
+                "requests": result.usage.requests,
+                "input_tokens": result.usage.input_tokens,
+                "output_tokens": result.usage.output_tokens,
+                "tool_calls": result.usage.tool_calls,
+            },
+        }
         print(".", end="", flush=True)
         time.sleep(wait)
     print()
@@ -327,7 +353,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--labels", type=Path, default=DEFAULT_LABELS, help="自分のラベル（jsonl）")
     parser.add_argument("--rubric", type=Path, default=DEFAULT_RUBRIC, help="採点の基準（markdown）")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="採点結果の保存先（json）")
-    parser.add_argument("--model", default=None, help="採点に使うモデル。既定は AIE_MODEL。'test' で API を呼ばない偽モデル")
+    parser.add_argument("--model", default=None, help="採点・回答生成に使うモデル。既定は AIE_MODEL。採点時の 'test' は API を呼ばない偽モデル")
     parser.add_argument("--wait", type=float, default=0.0, help="1 件ごとに待つ秒数（レート制限にかかるとき）")
     parser.add_argument("--compare", type=Path, help="LLM を呼ばず、このラベルファイルと --labels の一致率を出す")
     parser.add_argument("--generate", action="store_true", help="評価セットの回答を自分のエージェントで生成し直す（--cases に上書き）")
@@ -343,7 +369,7 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.generate:
         try:
-            cases = generate_answers(cases)
+            cases = generate_answers(cases, wait=args.wait, model_name=args.model)
         except ModelHTTPError as e:
             print(api_error_message(e.status_code, str(e.body)[:200]))
             raise SystemExit(1)
@@ -376,12 +402,18 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit(1)
 
     summary = summarize(cases, verdicts, labels)
-    print_summary(summary)
+    has_draft_labels = any(
+        row.get("label_source") == "assistant_draft" and not row.get("human_reviewed", False)
+        for row in labels.values()
+    )
+    labeler = "AIが作成した仮ラベル（本人未確認）" if has_draft_labels else "自分のラベル"
+    print_summary(summary, labeler=labeler)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
         json.dumps(
             {"model": model_name, "rubric": str(_rel(args.rubric)), "run_at": datetime.now().isoformat(timespec="seconds"),
+             "labels": str(_rel(args.labels)), "labeler": labeler,
              "verdicts": verdicts, "summary": summary},
             ensure_ascii=False, indent=2,
         ),

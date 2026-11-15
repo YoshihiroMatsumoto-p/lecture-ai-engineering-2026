@@ -4,6 +4,13 @@
 「採点 → 人のラベルとの比較 → 要確認・不一致の集計」が通ることを確かめる。
 """
 
+import json
+
+import pytest
+from pydantic_ai.models.google import GoogleModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
+from pydantic_ai.models.test import TestModel
+
 from app import judge
 from app.judge import (
     ALL_CRITERIA,
@@ -68,3 +75,62 @@ def test_judge_pipeline_with_fake_model():
     assert summary["coverage"]["covered"] + len({r["id"] for r in summary["review"]}) == 10
     for m in summary["mismatches"]:
         assert m["kind"] in ("見逃し", "過検出")
+
+
+@pytest.mark.parametrize("name", [
+    "gpt-4.1-mini-2025-04-14",
+    "openai:gpt-4.1-mini-2025-04-14",
+    "openai-responses:gpt-4.1-mini-2025-04-14",
+])
+def test_openai_judge_does_not_require_gemini_key(monkeypatch, name):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-not-a-real-key")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    model = judge.build_llm_model(name)
+    assert isinstance(model, OpenAIResponsesModel)
+    assert model.model_name == "gpt-4.1-mini-2025-04-14"
+
+
+def test_gemini_judge_remains_available(monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "test-not-a-real-key")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    assert isinstance(judge.build_llm_model("gemini-3.5-flash-lite"), GoogleModel)
+
+
+def test_generated_answers_include_observed_tool_calls(monkeypatch):
+    import app.agent as agent_module
+
+    model = TestModel(call_tools=["search_glossary"], custom_output_text="ツールの実行はプログラムが担当します。\n第3回")
+    monkeypatch.setattr(agent_module, "build_model", lambda: model)
+    cases = [{"id": "01", "question": "ツールとは？", "answer": ""}]
+    result = judge.generate_answers(cases, wait=0)
+    assert result[0]["answer"].endswith("第3回")
+    generated = result[0]["generation"]
+    assert [call["name"] for call in generated["tool_calls"]] == ["search_glossary"]
+    assert generated["usage"]["requests"] == 2
+    assert generated["usage"]["tool_calls"] == 1
+
+
+def test_generation_does_not_approve_writes_or_treat_deferral_as_answer(monkeypatch, tmp_path):
+    import app.agent as agent_module
+
+    monkeypatch.setattr(agent_module, "build_model", lambda: TestModel(call_tools=["save_learning_log"]))
+    log_dir = tmp_path / "learning_log"
+    monkeypatch.setattr(judge.tools, "LEARNING_LOG_DIR", log_dir)
+    cases = [{"id": "01", "question": "学習内容を保存して", "answer": ""}]
+    with pytest.raises(SystemExit, match="承認待ち"):
+        judge.generate_answers(cases, wait=0)
+    assert cases[0]["answer"] == ""
+    assert not log_dir.exists()
+
+
+def test_cli_does_not_present_ai_draft_labels_as_human_labels(tmp_path, capsys):
+    labels_path = tmp_path / "labels.jsonl"
+    out_path = tmp_path / "result.json"
+    rows = read_jsonl(INSTRUCTOR_LABELS)
+    for row in rows:
+        row.update(label_source="assistant_draft", human_reviewed=False)
+    judge.write_jsonl(labels_path, rows)
+    judge.main(["--model", "test", "--labels", str(labels_path), "--out", str(out_path)])
+    result = json.loads(out_path.read_text())
+    assert result["labeler"] == "AIが作成した仮ラベル（本人未確認）"
+    assert result["labeler"] in capsys.readouterr().out
