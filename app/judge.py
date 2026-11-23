@@ -1,7 +1,7 @@
 """第4回: LLM-as-a-Judge で評価セットを採点し、人のラベルとの一致率を出す。
 
 使い方:
-    uv run python -m app.judge                  # 評価セットを採点する（Gemini: GEMINI_API_KEY / GPT: OPENAI_API_KEY）
+    uv run python -m app.judge                  # OpenAIで評価セットを採点する（OPENAI_API_KEY）
     uv run python -m app.judge --model test     # API を呼ばず、簡単な規則で判定する偽モデルで動かす（動作確認用）
     uv run python -m app.judge --compare lectures/04/reference/labels_instructor.jsonl
                                                 # 2 つのラベルファイルの一致率を出す（API キー不要）
@@ -15,6 +15,7 @@ pass / fail / unsure のどれかを返させる（構造化出力）。unsure �
 
 import argparse
 import json
+import os
 import re
 import time
 import unicodedata
@@ -31,11 +32,13 @@ from pydantic_ai.models import Model
 from pydantic_ai.models.google import GoogleModel
 from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.google import GoogleProvider
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from app import tools
-from app.config import MODEL, api_error_message, get_api_key
+from app.config import DEFAULT_OPENAI_MODEL, api_error_message, get_api_key, get_openai_api_key
 
 ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_MODEL = DEFAULT_OPENAI_MODEL
 DEFAULT_CASES = ROOT / "data" / "eval" / "lec04_cases.jsonl"
 DEFAULT_RUBRIC = ROOT / "data" / "eval" / "rubric.md"
 DEFAULT_LABELS = ROOT / "lectures" / "04" / "labels.jsonl"
@@ -129,7 +132,7 @@ def build_llm_model(model_name: str) -> Model:
     """GPT は OpenAI Responses API、それ以外は従来どおり Gemini に接続する。"""
     if model_name.startswith(("gpt-", "openai:", "openai-responses:")):
         name = model_name.removeprefix("openai:").removeprefix("openai-responses:")
-        return OpenAIResponsesModel(name)
+        return OpenAIResponsesModel(name, provider=OpenAIProvider(api_key=get_openai_api_key()))
     return GoogleModel(model_name, provider=GoogleProvider(api_key=get_api_key()))
 
 
@@ -353,7 +356,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--labels", type=Path, default=DEFAULT_LABELS, help="自分のラベル（jsonl）")
     parser.add_argument("--rubric", type=Path, default=DEFAULT_RUBRIC, help="採点の基準（markdown）")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="採点結果の保存先（json）")
-    parser.add_argument("--model", default=None, help="採点・回答生成に使うモデル。既定は AIE_MODEL。採点時の 'test' は API を呼ばない偽モデル")
+    parser.add_argument("--model", default=os.getenv("AIE_MODEL", DEFAULT_MODEL),
+                        help=f"採点・回答生成に使うモデル。既定は {DEFAULT_MODEL}（AIE_MODEL で変更可）。採点時の 'test' は API を呼ばない偽モデル")
     parser.add_argument("--wait", type=float, default=0.0, help="1 件ごとに待つ秒数（レート制限にかかるとき）")
     parser.add_argument("--compare", type=Path, help="LLM を呼ばず、このラベルファイルと --labels の一致率を出す")
     parser.add_argument("--generate", action="store_true", help="評価セットの回答を自分のエージェントで生成し直す（--cases に上書き）")
@@ -382,7 +386,7 @@ def main(argv: list[str] | None = None) -> None:
     labels = load_labels(args.labels)
     rubric = args.rubric.read_text(encoding="utf-8")
 
-    model_name = args.model or MODEL
+    model_name = args.model
     if model_name == "test":
         model = build_test_model()
         print("[model] test（API を呼ばず、簡単な規則で判定する偽モデル。本物の採点ではありません）")

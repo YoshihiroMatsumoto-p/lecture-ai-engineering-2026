@@ -26,10 +26,11 @@ from pydantic_ai.models import Model
 from pydantic_ai.models.test import TestModel
 # from pydantic_ai.providers.google import GoogleProvider  # 松本memo: OpenAIを使うため削除
 from pydantic_ai.models.openai import OpenAIResponsesModel  # 松本memo: OpenAIを使うため追加
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from app import tools
 # from app.config import MODEL, api_error_message, get_api_key  # 松本memo: OpenAIを使うため削除
-from app.config import MODEL, api_error_message  # 松本memo: OpenAIを使うため変更
+from app.config import OPENAI_MODEL as MODEL, api_error_message, get_openai_api_key
 
 INSTRUCTIONS = """\
 あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
@@ -88,7 +89,7 @@ def build_model() -> GoogleModel:
     return GoogleModel(MODEL, provider=GoogleProvider(api_key=get_api_key()))
 """
 def build_model() -> OpenAIResponsesModel:
-    return OpenAIResponsesModel(MODEL)
+    return OpenAIResponsesModel(MODEL, provider=OpenAIProvider(api_key=get_openai_api_key()))
 
 
 def print_tools(target: Agent) -> None:
