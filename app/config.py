@@ -1,14 +1,46 @@
 """講座全体で共通の設定。
 
-APIキーやモデル名はコードに書かず、環境変数から読み込む。
+APIキーは環境変数、OpenAI用はMacのキーチェーンからも読み込む。
 """
 
+import getpass
 import os
+import subprocess
+import sys
 
 # 既定モデル。環境変数 AIE_MODEL を設定すると切り替えられる。
 #   例: export AIE_MODEL=gemini-3.5-flash
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
 MODEL = os.getenv("AIE_MODEL", DEFAULT_MODEL)
+DEFAULT_OPENAI_MODEL = "gpt-4.1-mini-2025-04-14"
+OPENAI_MODEL = os.getenv("AIE_MODEL", DEFAULT_OPENAI_MODEL)
+OPENAI_KEYCHAIN_SERVICE = "aie2026-openai-api-key"
+
+
+def get_openai_api_key() -> str:
+    """環境変数を優先し、未設定ならこの講座専用のMacキーチェーン項目を読む。"""
+    key = os.getenv("OPENAI_API_KEY")
+    if key:
+        return key
+    if sys.platform == "darwin":
+        try:
+            result = subprocess.run(
+                ["/usr/bin/security", "find-generic-password", "-a", getpass.getuser(),
+                 "-s", OPENAI_KEYCHAIN_SERVICE, "-w"],
+                capture_output=True, text=True, timeout=30,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            raise SystemExit("OpenAI APIキーをキーチェーンから読み取れませんでした。Macのロックを解除して再実行してください。") from None
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+        if result.returncode not in (0, 44):  # 44: 指定した項目が存在しない
+            raise SystemExit("OpenAI APIキーへのキーチェーンアクセスが許可されませんでした。キーチェーンのロックと許可画面を確認してください。")
+        raise SystemExit(
+            "OpenAI APIキーが未登録です。ターミナルで次を実行し、表示される入力欄にキーを貼り付けてください。\n"
+            "uv run python -m app.configure_openai\n"
+            "入力したキーは画面に表示されません。登録後は再起動しても自動で読み込めます。"
+        )
+    raise SystemExit("環境変数 OPENAI_API_KEY が見つかりません。実行環境のシークレットまたは環境変数に設定してください。")
 
 
 def api_error_message(status: int, detail: str = "") -> str:
