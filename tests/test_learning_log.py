@@ -81,7 +81,7 @@ def test_cli_previews_content_and_saves_only_when_approved(
 
     output = capsys.readouterr().out
     assert "[tool call]   save_learning_log" in output
-    assert "requests=2" in output  # 承認前と再開後のLLM呼び出しを合算する。
+    assert "モデル応答 2 回" in output  # 承認前と再開後のLLM呼び出しを合算する。
     if approved:
         paths = list(log_dir.glob("*.json"))
         assert len(paths) == 1
