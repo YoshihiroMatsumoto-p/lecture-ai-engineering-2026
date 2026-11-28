@@ -1,6 +1,7 @@
 """実SQLiteと固定ベクトルで、索引作成から検索までを確認する。APIは呼ばない。"""
 
 import json
+import sqlite3
 from unittest.mock import Mock
 
 import pytest
@@ -10,7 +11,8 @@ from scripts.build_rag_index import build_index
 
 
 @pytest.fixture
-def materials(tmp_path):
+def materials(tmp_path, monkeypatch):
+    monkeypatch.setattr(retrieval, "EMBEDDING_DIMENSIONS", 2)
     source = tmp_path / "lectures.json"
     source.write_text(json.dumps([
         {"id": f"lec{n:02d}-main", "title": f"講義{n}", "content": [
@@ -52,5 +54,35 @@ def test_existing_index_survives_failed_rebuild(materials):
     embed.assert_not_called()
     with pytest.raises(RuntimeError, match="埋め込みに失敗"):
         build_index(source, database, rebuild=True, embedder=embed)
+    assert database.read_bytes() == before
+    assert not list(database.parent.glob(".rag-build-*"))
+
+
+def test_default_builder_uses_openai_batch_and_records_settings(materials, monkeypatch):
+    source, database = materials
+    embed = Mock(return_value=[[1, 0], [0, 1]])
+    monkeypatch.setattr(retrieval, "embed_texts", embed)
+    build_index(source, database)
+    texts, task = embed.call_args.args
+    assert len(texts) == 2 and task == "RETRIEVAL_DOCUMENT"
+    with sqlite3.connect(database) as db:
+        assert db.execute("SELECT * FROM embedding_config").fetchone() == ("openai", "text-embedding-3-small", 2)
+        assert db.execute("SELECT count(*) FROM chunks").fetchone()[0] == 2
+
+
+def test_builder_never_overwrites_bundled_gemini_db():
+    from app.config import BUNDLED_RAG_DB
+    before = BUNDLED_RAG_DB.read_bytes()
+    with pytest.raises(ValueError, match="上書きしません"):
+        build_index(destination=BUNDLED_RAG_DB, rebuild=True)
+    assert BUNDLED_RAG_DB.read_bytes() == before
+
+
+def test_dimension_error_preserves_previous_index(materials):
+    source, database = materials
+    build_index(source, database, embedder=lambda *_: [1, 0])
+    before = database.read_bytes()
+    with pytest.raises(ValueError, match="次元"):
+        build_index(source, database, rebuild=True, embedder=lambda *_: [1])
     assert database.read_bytes() == before
     assert not list(database.parent.glob(".rag-build-*"))

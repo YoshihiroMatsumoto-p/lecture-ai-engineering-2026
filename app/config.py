@@ -48,16 +48,18 @@ ROOT = Path(__file__).resolve().parent.parent
 RAG_SOURCE = ROOT / "data/rag_data/lectures.json"
 RAG_TREE = ROOT / "data/rag_data/tree.json"
 RAG_GRAPH = ROOT / "data/rag_data/graph.json"
-RAG_DB = Path(os.getenv("AIE_RAG_DB", str(ROOT / "data/rag_data/index.sqlite3")))
+BUNDLED_RAG_DB = ROOT / "data/rag_data/index.sqlite3"
+RAG_DB = Path(os.getenv("AIE_RAG_DB", str(ROOT / ".cache/rag/openai.sqlite3")))
 RAG_DOCUMENT_IDS = ("lec01-main", "lec02-main", "lec03-main")
 RAG_TOP_K = 5
 GRAPH_START_K = 3
 GRAPH_HOPS = 2
 GRAPH_MAX_RESULTS = 10
-EMBEDDING_MODEL = "gemini-embedding-001"
+EMBEDDING_PROVIDER = "openai"
+EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 768
-# 2,048トークンの上限に対し、タスク指定等の分を残す。超過時は切り捨てず停止する。
-EMBEDDING_MAX_TOKENS = 2000
+# OpenAIの入力上限に余裕を残す。超過時は本文を切り捨てず停止する。
+EMBEDDING_MAX_TOKENS = 8191
 
 
 def api_error_message(status: int, detail: str = "") -> str:

@@ -15,6 +15,7 @@ dependencies = [
     { name = "google-genai" },
     { name = "pydantic-ai-slim", extra = ["google", "mcp", "openai"] },
     { name = "sqlite-vec" },
+    { name = "tiktoken" },
 ]
 
 [package.dev-dependencies]
@@ -27,6 +28,7 @@ requires-dist = [
     { name = "google-genai", specifier = "==2.31.0" },
     { name = "pydantic-ai-slim", extras = ["google", "mcp", "openai"], specifier = "==2.57.0" },
     { name = "sqlite-vec", specifier = "==0.1.9" },
+    { name = "tiktoken", specifier = "==0.14.0" },
 ]
 
 [package.metadata.requires-dev]

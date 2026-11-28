@@ -17,7 +17,7 @@ AIエンジニアリング実践講座（AIE2026）の演習と宿題で使う�
 
 自分の PC で動かす場合は、Python 3.12 と [uv](https://docs.astral.sh/uv/) を入れて `uv sync --frozen` を実行し、環境変数 `GEMINI_API_KEY` を設定してください。
 
-### このMacでOpenAIを使う場合（第3〜5回の回答生成・採点）
+### このMacでOpenAIを使う場合（第3〜5回の回答生成・採点・検索）
 
 `app.agent`と`app.judge`は、既定で`gpt-4.1-mini-2025-04-14`を使います。
 APIキーは環境変数`OPENAI_API_KEY`を優先し、未設定ならMacのキーチェーンから読みます。
@@ -86,16 +86,21 @@ uv run python -m app.ask \
 
 演習・宿題の手順は [lectures/05/problem.md](lectures/05/problem.md)、結果の記入先は [lectures/05/answer.md](lectures/05/answer.md) です。
 
-第1〜3回の本講義214ページを埋め込んだ検索DB `data/rag_data/index.sqlite3` を同梱しています。`GEMINI_API_KEY` を設定し、リポジトリ直下で依存関係をそろえたら、検索や回答を試せます。検索時の質問の埋め込みと回答生成にはAPIを使います。
+このforkでは、回答生成と検索用の埋め込みにOpenAIを使います。第5回には`GEMINI_API_KEY`は不要です。上記のキーチェーン、または`OPENAI_API_KEY`を使います。
 
-このforkでは回答生成にOpenAIを使います。通常の検索とGraphの埋め込みは配布元のGemini方式を保持しているため、`GEMINI_API_KEY`も必要です。Treeと全文投入はOpenAIのキーだけで動きます。検索もOpenAIに統一する場合は埋め込み処理の変更と、OpenAIの埋め込みによる別DBの作成が必要です。
+初回は、第1〜3回の本講義214ページからOpenAI用DBを作ります。埋め込みは`text-embedding-3-small`の768次元、回答生成は`gpt-4.1-mini-2025-04-14`です。DB作成時と検索時の埋め込みにもAPI利用料金が発生します。トークナイザの初回起動時には語彙データのダウンロードが必要です。
 
 ```bash
 uv sync --frozen
+uv run python -m scripts.build_rag_index
 uv run python -m app.retrieval "LoRA QLoRA 違い"
 uv run python -m app.agent --trace "LoRAとQLoRAの違いは？"
 uv run python -m app.agent --graph --trace "LoRAとQLoRAの違いは？"
 ```
+
+DBは`.cache/rag/openai.sqlite3`に保存し、Gitには含めません。一度作れば再起動後も使えます。作成コマンドは既存DBを上書きせず停止します。別のPCでは初回に作成してください。
+
+配布元の`data/rag_data/index.sqlite3`はGemini用なので、そのまま保持します。モデルが違う埋め込み同士は比較できません。DBに保存した提供元・モデル・次元を検索前に照合し、不一致や情報のないDBではAPIを呼ばず停止します。
 
 教材本文や埋め込み設定を変更した場合は、実験用のDBを作ります。`AIE_RAG_DB` を設定したターミナルでは、作成と検索の両方がそのパスを使います。
 
@@ -104,7 +109,7 @@ export AIE_RAG_DB="$PWD/.cache/rag/custom.sqlite3"
 uv run python -m scripts.build_rag_index
 ```
 
-同じ実験用DBを再作成する場合は、作成コマンドに `--rebuild` を付けます。同梱DBに戻すときは `unset AIE_RAG_DB` を実行します。Treeモード（`--tree`）と全文投入（`--full-context`）には検索DBは不要です。
+同じ実験用DBを再作成する場合は、作成コマンドに `--rebuild` を付けます。既定のOpenAI用DBに戻すときは `unset AIE_RAG_DB` を実行します。配布元のGemini用DBは`--rebuild`でも上書きしません。Treeモード（`--tree`）と全文投入（`--full-context`）には検索DBは不要です。
 
 ## 構成
 

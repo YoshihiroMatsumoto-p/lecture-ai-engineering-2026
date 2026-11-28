@@ -144,7 +144,7 @@ def search_materials(query: str) -> str:
 
     queryに調べたい内容を指定する。
     """
-    from google.genai.errors import APIError
+    from openai import APIStatusError, APIConnectionError
     import sqlite3
     from app.retrieval import search
 
@@ -152,8 +152,10 @@ def search_materials(query: str) -> str:
         return json.dumps({"results": search(query)}, ensure_ascii=False)
     except (ValueError, FileNotFoundError, sqlite3.Error) as e:
         return json.dumps({"error": str(e), "results": []}, ensure_ascii=False)
-    except APIError as e:
-        return json.dumps({"error": api_error_message(e.code), "results": []}, ensure_ascii=False)
+    except APIStatusError as e:
+        return json.dumps({"error": api_error_message(e.status_code), "results": []}, ensure_ascii=False)
+    except APIConnectionError:
+        return json.dumps({"error": "OpenAIの埋め込みAPIに接続できませんでした。", "results": []}, ensure_ascii=False)
 
 
 def browse_tree(node_id: str | None = None) -> str:
@@ -175,12 +177,14 @@ def search_graph(query: str) -> str:
     queryに調べたい内容を指定する。
     """
     import sqlite3
-    from google.genai.errors import APIError
+    from openai import APIStatusError, APIConnectionError
     from app.retrieval import search_graph as search
 
     try:
         return json.dumps(search(query), ensure_ascii=False)
     except (ValueError, OSError, sqlite3.Error) as e:
         return json.dumps({"error": str(e)}, ensure_ascii=False)
-    except APIError as e:
-        return json.dumps({"error": api_error_message(e.code)}, ensure_ascii=False)
+    except APIStatusError as e:
+        return json.dumps({"error": api_error_message(e.status_code)}, ensure_ascii=False)
+    except APIConnectionError:
+        return json.dumps({"error": "OpenAIの埋め込みAPIに接続できませんでした。"}, ensure_ascii=False)

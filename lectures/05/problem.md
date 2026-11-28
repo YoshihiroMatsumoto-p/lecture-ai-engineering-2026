@@ -15,7 +15,8 @@
 | [data/rag_data/lectures.json](../../data/rag_data/lectures.json) | 講義・章・ページごとのタイトルと本文。1ページを1チャンクとして使う |
 | [data/rag_data/tree.json](../../data/rag_data/tree.json) | 資料・章・ページの階層 |
 | [data/rag_data/graph.json](../../data/rag_data/graph.json) | ページ・用語などのノードと、それらを結ぶ関係 |
-| [data/rag_data/index.sqlite3](../../data/rag_data/index.sqlite3) | 第1〜3回の本講義214ページを収めた検索DB |
+| [.cache/rag/openai.sqlite3](../../.cache/rag/openai.sqlite3) | 第1〜3回の本講義214ページから初回に作るOpenAI用検索DB（Git管理外） |
+| [data/rag_data/index.sqlite3](../../data/rag_data/index.sqlite3) | 配布元のGemini用DB。保管のみで、このforkの検索には使用しない |
 | [scripts/build_rag_index.py](../../scripts/build_rag_index.py) | 資料を埋め込み、検索用SQLite DBを作成する |
 | [app/retrieval.py](../../app/retrieval.py) | ベクトル検索・Tree探索・Graph探索・全文投入の処理 |
 | [app/tools.py](../../app/tools.py) | モデルが使うツールの説明と入出力 |
@@ -41,11 +42,17 @@ uv sync --frozen
 - 前の回の変更が残っていて切り替えられない場合は、そのブランチでcommitしてから再実行します
 - 更新時に衝突が出た場合は、自分の変更を捨てずに講師へ確認してください
 
-APIキーは第1回と同じ環境変数`GEMINI_API_KEY`を使います。Codespacesのsecretを後から登録した場合は、Codespacesを再起動してください。設定方法は[README](../../README.md)を参照してください。
+このforkの第5回はOpenAIを使います。Macでは登録済みのキーチェーンのキー、または環境変数`OPENAI_API_KEY`を使用します。Codespacesでは同名のsecretを設定します。設定方法は[README](../../README.md)を参照してください。
 
-### 2. 同梱の検索DBを確認する
+### 2. OpenAI用の検索DBを初回に作成する
 
-ベクトル検索とGraphは、同梱の`data/rag_data/index.sqlite3`をそのまま使います。第5回の更新を取り込んだら、演習に進んでください。質問の埋め込みと回答生成には`GEMINI_API_KEY`を使います。Treeと全文投入には検索DBは不要です。
+ベクトル検索とGraphは、`text-embedding-3-small`（768次元）で作る`.cache/rag/openai.sqlite3`を使います。初回のみ、リポジトリ直下で実行します。
+
+```bash
+uv run python -m scripts.build_rag_index
+```
+
+既に作成済みなら再作成は不要です。質問の埋め込みと回答生成にもOpenAIを使います。配布元のGemini用DBは上書きせず保持します。Treeと全文投入には検索DBは不要です。
 
 ## 演習
 
@@ -188,8 +195,9 @@ AIツールは使ってかまいません。自分で実行して確かめたこ
 
 | 症状 | 確認すること |
 |---|---|
-| `GEMINI_API_KEY`が見つからない | Codespacesのsecretを登録したか。後から登録した場合はCodespacesを再起動したか |
-| 「検索DBがありません」 | 第5回の更新を取り込み、`data/rag_data/index.sqlite3`があるか確認する。`AIE_RAG_DB`を設定した場合は指定先を確認する |
+| OpenAI APIキーが見つからない | Macは`uv run python -m app.configure_openai`で登録する。Codespacesでは`OPENAI_API_KEY`をsecretに設定する |
+| 「OpenAI用検索DBがありません」 | `uv run python -m scripts.build_rag_index`で作成する。`AIE_RAG_DB`を設定した場合は指定先を確認する |
+| DBの埋め込み情報がない・モデルが一致しない | Gemini用DBなどを指定していないか確認する。`unset AIE_RAG_DB`で既定のOpenAI用DBに戻す |
 | APIのレート制限に達した | 表示メッセージに従って待ってから再実行する |
 | 質問が空だと言われる | 別のターミナルを開いた場合は`AIE_QUESTION`をもう一度設定する |
 | 検索結果が質問に答えていない | `app.retrieval`で検索だけを試し、検索語・対象資料・返す件数を確認する |
