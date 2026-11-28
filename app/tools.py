@@ -146,7 +146,8 @@ def search_materials(query: str) -> str:
     """
     from openai import APIStatusError, APIConnectionError
     import sqlite3
-    from app.retrieval import search
+    # from app.retrieval import search
+    from app.retrieval import search_with_neighbors as search # 前後ページを追加した検索
 
     try:
         return json.dumps({"results": search(query)}, ensure_ascii=False)
